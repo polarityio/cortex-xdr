@@ -1,0 +1,102 @@
+polarity.export = PolarityComponent.extend({
+  details: Ember.computed.alias('block.data.details'),
+  summary: Ember.computed.alias('block.data.summary'),
+  activeTab: 'incidents',
+  timezone: Ember.computed('Intl', function () {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  }),
+  expandableTitleStates: Ember.computed.alias('block._state.expandableTitleStates'),
+  xqlResultsObtained: false,
+  getXqlQueryResultsIsRunning: false,
+  getXqlQueryResultsSuccessMessage: '',
+  getXqlQueryResultsErrorMessage: '',
+  xqlQueryDisplayString: '',
+  init: function () {
+    this.set(
+      'xqlQueryDisplayString',
+      this.get('block.userOptions.xqlQueryString').replace(
+        /{{ENTITY}}/gi,
+        this.get('block.entity.value')
+      )
+    );
+
+    if (this.get('details.xqlQueryResults')) this.set('xqlResultsObtained', true);
+
+    if (!this.get('block._state')) {
+      this.set('block._state', {});
+      this.set('block._state.expandableTitleStates', {});
+    }
+    if (this.get('details.incidents').length) {
+      this.set('activeTab', 'incidents');
+    } else {
+      this.set('activeTab', 'xqlQueryResult');
+      if (!this.get('xqlResultsObtained')) this.getXqlQueryResults();
+    }
+    this._super(...arguments);
+  },
+  actions: {
+    changeTab: function (tabName) {
+      this.set('activeTab', tabName);
+      if (!this.get('xqlResultsObtained') && tabName === 'xqlQueryResult')
+        this.getXqlQueryResults();
+    },
+    toggleExpandableTitle: function (index) {
+      this.set(
+        `block._state.expandableTitleStates.${index}`,
+        !this.get(`block._state.expandableTitleStates.${index}`)
+      );
+    },
+    getXqlQueryResults: function () {
+      this.getXqlQueryResults();
+    }
+  },
+  getXqlQueryResults: function () {
+    this.set('getXqlQueryResultsIsRunning', true);
+    this.set('getXqlQueryResultsSuccessMessage', '');
+
+    this.sendIntegrationMessage({
+      action: 'getXqlQueryResults',
+      data: {
+        entity: this.get('block.entity'),
+        jobId: this.get('details.xqlQueryJobId')
+      }
+    })
+      .then(({ stillPending, xqlQueryResults }) => {
+        if (stillPending) {
+          this.set('getXqlQueryResultsSuccessMessage', 'XQL Query is still running...');
+
+          return;
+        }
+
+        this.set(`details.xqlQueryResults`, xqlQueryResults);
+        this.set(
+          'summary',
+          this.get('summary')
+            .filter((summaryTag) => summaryTag !== 'XQL Query Ran')
+            .concat(`XQL Results: ${xqlQueryResults.length}`)
+        );
+        this.set('xqlResultsObtained', true);
+      })
+      .catch((err) => {
+        this.set(
+          `getXqlQueryResultsErrorMessage`,
+          `Failed to Get XQL Query Result: ${
+            (err &&
+              (err.detail || err.message || err.err || err.title || err.description)) ||
+            'Unknown Reason'
+          }`
+        );
+      })
+      .finally(() => {
+        this.set('getXqlQueryResultsIsRunning', false);
+        this.get('block').notifyPropertyChange('data');
+
+        setTimeout(() => {
+          this.set('getXqlQueryResultsSuccessMessage', '');
+          this.set(`getXqlQueryResultsErrorMessage`, '');
+
+          this.get('block').notifyPropertyChange('data');
+        }, 5000);
+      });
+  }
+});
