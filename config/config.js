@@ -3,6 +3,7 @@ module.exports = {
   acronym: 'CXDR',
   description: 'Search for Incidents, and XQL Queries',
   entityTypes: ['domain', 'IPv4', 'IPv6', 'hash', 'email', 'cve'],
+  onDemandOnly: true,
   defaultColor: 'light-blue',
   styles: ['./client/styles.less'],
   block: {
@@ -21,7 +22,7 @@ module.exports = {
     proxy: ''
   },
   logging: {
-    level: 'info' //trace, debug, info, warn, error, fatal
+    level: 'trace' //trace, debug, info, warn, error, fatal
   },
   options: [
     {
