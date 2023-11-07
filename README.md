@@ -22,7 +22,7 @@ To learn more about Cortex XDR, visit the [official website](https://www.paloalt
 ## Cortex XDR Integration Options
 
 ### API URL
-The API Url for your Cortex XDR instance. Configuration -> API Key -> Copy API URL
+The API Url for your Cortex XDR instance. NOTE: This is not the same as your Cortex XDR instance URL, but can be found at Configuration -> API Key -> Copy API URL
 
 ### API Key
 An API Key on your Cortex XDR instance. Configuration -> API Key

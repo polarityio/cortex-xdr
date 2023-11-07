@@ -28,7 +28,7 @@ module.exports = {
       key: 'url',
       name: 'API URL',
       description:
-        'The API Url for your Cortex XDR instance. Configuration -> API Key -> Copy API URL',
+        'The API Url for your Cortex XDR instance. NOTE: This is not the same as your Cortex XDR instance URL, but can be found at Configuration -> API Key -> Copy API URL',
       default: '',
       type: 'text',
       userCanEdit: false,
