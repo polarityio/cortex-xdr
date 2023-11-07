@@ -4,6 +4,8 @@ Cortex XDR allows you to safeguard your organization with proven endpoint securi
 
 The Polarity Cortex XDR Integration allows you to search for Incidents, and XQL Queries.
 
+
+
 <div style="display:flex; align-items: flex-start; justify-content:flex-start; align-items:flex-start;">
   <img width="350" alt="Integration Example Incidents" src="./images/incidents.png">
   <img width="350" alt="Integration Example XQL Query Results" src="./images/xql-query-results.png">
@@ -14,6 +16,8 @@ The Polarity Cortex XDR Integration allows you to search for Incidents, and XQL 
 </div>
 
 To learn more about Cortex XDR, visit the [official website](https://www.paloaltonetworks.com/cortex/cortex-xdr).
+
+>***NOTE:*** Only Incidents with you searched entity in the Incident `description` will return results due to limitations with the Cortex XDR API.
 
 > ***NOTE:*** If you would like us to display more fields for XQL Queries, please reach out to support@polarity.io.  
 > We are happy to add additional fields as requested.
