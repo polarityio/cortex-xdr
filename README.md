@@ -2,9 +2,7 @@
 
 Cortex XDR allows you to safeguard your organization with proven endpoint security, detection, response, automation and attack surface management.
 
-The Polarity Cortex XDR Integration allows you to search for Incidents, and XQL Queries.
-
-
+The Polarity Cortex XDR Integration allows you to search for Incidents and run XQL Queries.
 
 <div style="display:flex; align-items: flex-start; justify-content:flex-start; align-items:flex-start;">
   <img width="350" alt="Integration Example Incidents" src="./images/incidents.png">
@@ -17,7 +15,7 @@ The Polarity Cortex XDR Integration allows you to search for Incidents, and XQL 
 
 To learn more about Cortex XDR, visit the [official website](https://www.paloaltonetworks.com/cortex/cortex-xdr).
 
->***NOTE:*** Only Incidents with you searched entity in the Incident `description` will return results due to limitations with the Cortex XDR API.
+>***NOTE:*** When searching incidents only the incident's description field can be searched due to limitations with the Cortex XDR API.
 
 > ***NOTE:*** If you would like us to display more fields for XQL Queries, please reach out to support@polarity.io.  
 > We are happy to add additional fields as requested.
@@ -26,7 +24,7 @@ To learn more about Cortex XDR, visit the [official website](https://www.paloalt
 ## Cortex XDR Integration Options
 
 ### API URL
-The API Url for your Cortex XDR instance. NOTE: This is not the same as your Cortex XDR instance URL, but can be found at Configuration -> API Key -> Copy API URL
+The API Url for your Cortex XDR instance. NOTE: This is not the same as your Cortex XDR instance URL, but can be found at Configuration -> API Key -> Copy API URL.  This option must be visible to all users so that the integration can display pivot links in the Overlay Window.
 
 ### API Key
 An API Key on your Cortex XDR instance. Configuration -> API Key
@@ -34,12 +32,15 @@ An API Key on your Cortex XDR instance. Configuration -> API Key
 ### API Key ID
 The ID associated with your API Key. Configuration -> API Key -> ID Column
 
-### Do XQL Queries
-Check if you want to run XQL Queries with the XQL Query String
+### Run XQL Query
+If enabled, the integration will run the XQL Query specified by the "XQL Query String" option below. The XQL Query is run in addition to searching incidents.
 
 ### XQL Query String
-The XQL Query you want to use when Searching Entities. Example: `dataset = xdr_data | filter agent_id contains "{{ENTITY}}" or agent_hostname contains "{{ENTITY}}" or agent_ip_addresses contains "{{ENTITY}}"  | limit 10`
+The XQL Query you want to use when Searching Entities.  Example: `dataset = xdr_data | filter agent_id contains "{{ENTITY}}" or agent_hostname contains "{{ENTITY}}" or agent_ip_addresses contains "{{ENTITY}}"  | limit 10`
 
+The string `{{ENTITY}}` will be replaced by the searched entity.
+
+If the XQL Query String option is visible to the user, the query string will be displayed in the Overlay Window.
 
 ## Installation Instructions
 Installation instructions for integrations are provided on the [PolarityIO GitHub Page](https://polarityio.github.io/).
