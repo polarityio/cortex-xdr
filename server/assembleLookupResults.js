@@ -34,6 +34,7 @@ const getResultsForThisEntity = (entity, incidents, cachedXqlQueryResults, optio
   const xqlQueryResults = getResultForThisEntity(entity, cachedXqlQueryResults);
 
   return {
+    dashboardUrl: options.url.replace('api-', ''),
     doXqlQuery: options.doXqlQueries && !xqlQueryResults,
     incidents: getResultForThisEntity(entity, incidents),
     xqlQueryResults

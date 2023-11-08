@@ -2,7 +2,7 @@
 
 Cortex XDR allows you to safeguard your organization with proven endpoint security, detection, response, automation and attack surface management.
 
-The Polarity Cortex XDR Integration allows you to search for Incidents and run XQL Queries.
+The Polarity Cortex XDR Integration allows you to search for Incidents and run XQL Queries.  Due to limits on the number of XQL queries that can be running at any given time, the integration only runs the provided XQL query when a user opens the details block for the entity in question. Once the XQL query has started, the user can check on the status of the query.  Once the query is complete, results will be displayed in the Overlay Window.
 
 <div style="display:flex; align-items: flex-start; justify-content:flex-start; align-items:flex-start;">
   <img width="350" alt="Integration Example Incidents" src="./images/incidents.png">
@@ -24,7 +24,7 @@ To learn more about Cortex XDR, visit the [official website](https://www.paloalt
 ## Cortex XDR Integration Options
 
 ### API URL
-The API Url for your Cortex XDR instance. NOTE: This is not the same as your Cortex XDR instance URL, but can be found at Configuration -> API Key -> Copy API URL.  This option must be visible to all users so that the integration can display pivot links in the Overlay Window.
+The API Url for your Cortex XDR instance. NOTE: This is not the same as your Cortex XDR instance URL, but can be found at Configuration -> API Key -> Copy API URL.
 
 ### API Key
 An API Key on your Cortex XDR instance. Configuration -> API Key
@@ -34,6 +34,8 @@ The ID associated with your API Key. Configuration -> API Key -> ID Column
 
 ### Run XQL Query
 If enabled, the integration will run the XQL Query specified by the "XQL Query String" option below. The XQL Query is run in addition to searching incidents.
+
+This option should be set to be visible by all users.
 
 ### XQL Query String
 The XQL Query you want to use when Searching Entities.  Example: `dataset = xdr_data | filter agent_id contains "{{ENTITY}}" or agent_hostname contains "{{ENTITY}}" or agent_ip_addresses contains "{{ENTITY}}"  | limit 10`
