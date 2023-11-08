@@ -155,7 +155,7 @@
           {{xqlQueryDisplayString}}
         </div>
       {{/if}}
-      <div class="d-flex flex-row justify-content-between align-items-center">
+      <div class="d-flex flex-row justify-content-start align-items-center">
         <button
           {{action "getXqlQueryResults"}}
           class="xql-refresh-button"
@@ -167,6 +167,8 @@
             Check Query Status
           {{/if}}
         </button>
+      </div>
+      <div class="d-flex flex-row align-items-center justify-content-start mt-2">
         {{#if getXqlQueryResultsSuccessMessage}}
           <div class="alert alert-info">
             {{getXqlQueryResultsSuccessMessage}}

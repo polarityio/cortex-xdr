@@ -72,7 +72,7 @@ const onDetails = async (lookupObject, options, cb) => {
         ...lookupObject.data.details,
         queryFailed: true,
         getXqlQueryResultsErrorMessage:
-          "Query couldn't run. Try Re-Searching this entity in a few seconds."
+          "Cortex XDR is running the maximum number of allowed XQL queries.  Please try Re-Searching this entity in a few seconds."
       }
     });
   }
