@@ -30,11 +30,11 @@ module.exports = {
       key: 'url',
       name: 'API URL',
       description:
-        'The API Url for your Cortex XDR instance. NOTE: This is not the same as your Cortex XDR instance URL, but can be found at Configuration -> API Key -> Copy API URL.  This option must be visible to all users.',
+        'The API Url for your Cortex XDR instance. NOTE: This is not the same as your Cortex XDR instance URL, but can be found at Configuration -> API Key -> Copy API URL.',
       default: '',
       type: 'text',
       userCanEdit: false,
-      adminOnly: false
+      adminOnly: true
     },
     {
       key: 'apiKey',
@@ -59,11 +59,11 @@ module.exports = {
       key: 'doXqlQueries',
       name: 'Run XQL Query',
       description:
-        'If enabled, the integration will run the XQL Query specified by the "XQL Query String" option below. The XQL Query is run in addition to searching incidents.',
+        'If enabled, the integration will run the XQL Query specified by the "XQL Query String" option below. The XQL Query is run in addition to searching incidents. This option must be visible to users.',
       default: false,
       type: 'boolean',
       userCanEdit: false,
-      adminOnly: true
+      adminOnly: false
     },
     {
       key: 'xqlQueryString',
@@ -74,7 +74,7 @@ module.exports = {
         'dataset = xdr_data | filter agent_id contains "{{ENTITY}}" or agent_hostname contains "{{ENTITY}}" or agent_ip_addresses contains "{{ENTITY}}"  | limit 10',
       type: 'text',
       userCanEdit: false,
-      adminOnly: true
+      adminOnly: false
     }
   ]
 };
