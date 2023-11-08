@@ -1,5 +1,5 @@
 'use strict';
-const { get } = require('lodash');
+const { get } = require('lodash/fp');
 const {
   logging: { setLogger, getLogger },
   errors: { parseErrorToReadableJson }
@@ -55,13 +55,18 @@ const doLookup = async (entities, _options, cb) => {
 };
 
 const onDetails = async (lookupObject, options, cb) => {
-  const xqlQueryJobId = get(lookupObject, 'data.details.doXqlQuery', false)
-    && await searchXqlQuery(lookupObject.entity, options);
-
-  cb(null, {
-    ...lookupObject.data,
-    details: { ...lookupObject.data.details, xqlQueryJobId }
-  });
+  try {
+    const xqlQueryJobId = get('data.details.doXqlQuery', lookupObject)
+      && await searchXqlQuery(lookupObject.entity, options);
+  
+    cb(null, {
+      ...lookupObject.data,
+      details: { ...lookupObject.data.details, xqlQueryJobId }
+    });
+  } catch (error) {
+    getLogger().error({ error }, 'Failed to Get Details');
+    cb(null, lookupObject.data);
+  }
 };
 
 const onMessage = ({ action, data: actionParams }, options, callback) =>

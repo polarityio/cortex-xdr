@@ -10,6 +10,12 @@ const { requestWithDefaults, xqlQueryResultsCache } = require('../request');
 const getXqlQueryResultsByJobId = async ({ entity, jobId }, options, callback) => {
   const Logger = getLogger();
   try {
+    if (!jobId) {
+      throw new Error(
+        "Query couldn't run. Try Re-Searching this entity in a few seconds."
+      );
+    }
+    
     const cachedXqlQueryResults = xqlQueryResultsCache.get(
       entity.value + options.xqlQueryString
     );

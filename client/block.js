@@ -11,6 +11,7 @@ polarity.export = PolarityComponent.extend({
   getXqlQueryResultsSuccessMessage: '',
   getXqlQueryResultsErrorMessage: '',
   xqlQueryDisplayString: '',
+  queryFailed: false,
   init: function () {
     // Admin might have locked this setting in which case non-admin users
     // won't have it set
@@ -83,12 +84,11 @@ polarity.export = PolarityComponent.extend({
       .catch((err) => {
         this.set(
           `getXqlQueryResultsErrorMessage`,
-          `Failed to Get XQL Query Result: ${
-            (err &&
-              (err.detail || err.message || err.err || err.title || err.description)) ||
+          (err &&
+            (err.detail || err.message || err.err || err.title || err.description)) ||
             'Unknown Reason'
-          }`
         );
+        this.set('queryFailed', true);
       })
       .finally(() => {
         this.set('getXqlQueryResultsIsRunning', false);
@@ -97,11 +97,10 @@ polarity.export = PolarityComponent.extend({
         setTimeout(() => {
           if (!this.isDestroyed) {
             this.set('getXqlQueryResultsSuccessMessage', '');
-            this.set(`getXqlQueryResultsErrorMessage`, '');
 
             this.get('block').notifyPropertyChange('data');
           }
-        }, 5000);
+        }, 10000);
       });
   }
 });
