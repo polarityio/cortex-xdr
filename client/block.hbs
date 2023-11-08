@@ -159,7 +159,7 @@
         <button
           {{action "getXqlQueryResults"}}
           class="xql-refresh-button"
-          disabled={{or getXqlQueryResultsIsRunning block.isLoadingDetails queryFailed}}
+          disabled={{or getXqlQueryResultsIsRunning block.isLoadingDetails details.queryFailed}}
         >
           {{#if getXqlQueryResultsIsRunning}}
             {{fa-icon "spinner-third" fixedWidth=true spin=true}}
@@ -172,9 +172,9 @@
             {{getXqlQueryResultsSuccessMessage}}
           </div>
         {{/if}}
-        {{#if getXqlQueryResultsErrorMessage}}
+        {{#if details.getXqlQueryResultsErrorMessage}}
           <div class="alert alert-danger">
-            {{getXqlQueryResultsErrorMessage}}
+            {{details.getXqlQueryResultsErrorMessage}}
           </div>
         {{/if}}
       </div>

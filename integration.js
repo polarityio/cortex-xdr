@@ -56,16 +56,25 @@ const doLookup = async (entities, _options, cb) => {
 
 const onDetails = async (lookupObject, options, cb) => {
   try {
-    const xqlQueryJobId = get('data.details.doXqlQuery', lookupObject)
-      && await searchXqlQuery(lookupObject.entity, options);
-  
+    const xqlQueryJobId =
+      get('data.details.doXqlQuery', lookupObject) &&
+      (await searchXqlQuery(lookupObject.entity, options));
+
     cb(null, {
       ...lookupObject.data,
       details: { ...lookupObject.data.details, xqlQueryJobId }
     });
   } catch (error) {
     getLogger().trace({ error }, 'Failed to Get Details');
-    cb(null, lookupObject.data);
+    cb(null, {
+      ...lookupObject.data,
+      details: {
+        ...lookupObject.data.details,
+        queryFailed: true,
+        getXqlQueryResultsErrorMessage:
+          "Query couldn't run. Try Re-Searching this entity in a few seconds."
+      }
+    });
   }
 };
 

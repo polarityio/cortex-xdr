@@ -9,7 +9,6 @@ polarity.export = PolarityComponent.extend({
   xqlResultsObtained: false,
   getXqlQueryResultsIsRunning: false,
   getXqlQueryResultsSuccessMessage: '',
-  getXqlQueryResultsErrorMessage: '',
   xqlQueryDisplayString: '',
   queryFailed: false,
   init: function () {
@@ -36,6 +35,7 @@ polarity.export = PolarityComponent.extend({
     } else {
       this.set('activeTab', 'xqlQueryResult');
     }
+
     this._super(...arguments);
   },
   actions: {
@@ -83,12 +83,12 @@ polarity.export = PolarityComponent.extend({
       })
       .catch((err) => {
         this.set(
-          `getXqlQueryResultsErrorMessage`,
+          `details.getXqlQueryResultsErrorMessage`,
           (err &&
             (err.detail || err.message || err.err || err.title || err.description)) ||
             'Unknown Reason'
         );
-        this.set('queryFailed', true);
+        this.set('details.queryFailed', true);
       })
       .finally(() => {
         this.set('getXqlQueryResultsIsRunning', false);
