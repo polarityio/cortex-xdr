@@ -10,6 +10,22 @@ polarity.export = PolarityComponent.extend({
   getXqlQueryResultsIsRunning: false,
   getXqlQueryResultsSuccessMessage: '',
   xqlQueryDisplayString: '',
+  searchXqlQueryIsRunning: false,
+  searchXqlQueryErrorMessage: Ember.computed(
+    'details.searchXqlQueryErrorMessage',
+    function () {
+      if(this.get('details.searchXqlQueryErrorMessage')) {
+        setTimeout(() => {
+          if (!this.isDestroyed) {
+            this.set('details.searchXqlQueryErrorMessage', '');
+
+            this.get('block').notifyPropertyChange('data');
+          }
+        }, 10000);
+      }
+      return this.get('details.searchXqlQueryErrorMessage');
+    }
+  ),
   queryFailed: false,
   init: function () {
     // Admin might have locked this setting in which case non-admin users
@@ -52,6 +68,9 @@ polarity.export = PolarityComponent.extend({
     },
     getXqlQueryResults: function () {
       this.getXqlQueryResults();
+    },
+    searchXqlQuery: function () {
+      this.searchXqlQuery();
     }
   },
   getXqlQueryResults: function () {
@@ -97,6 +116,42 @@ polarity.export = PolarityComponent.extend({
         setTimeout(() => {
           if (!this.isDestroyed) {
             this.set('getXqlQueryResultsSuccessMessage', '');
+
+            this.get('block').notifyPropertyChange('data');
+          }
+        }, 10000);
+      });
+  },
+  searchXqlQuery: function () {
+    this.set('searchXqlQueryIsRunning', true);
+
+    this.sendIntegrationMessage({
+      action: 'searchXqlQuery',
+      data: {
+        entity: this.get('block.entity')
+      }
+    })
+      .then(({ xqlQueryJobId }) => {
+        this.set('details.queryFailed', false);
+
+        this.set('details.xqlQueryJobId', xqlQueryJobId);
+      })
+      .catch((err) => {
+        this.set(
+          `searchXqlQueryErrorMessage`,
+          (err &&
+            (err.detail || err.message || err.err || err.title || err.description)) ||
+            'Unknown Reason'
+        );
+        this.set('details.queryFailed', true);
+      })
+      .finally(() => {
+        this.set('searchXqlQueryIsRunning', false);
+        this.get('block').notifyPropertyChange('data');
+
+        setTimeout(() => {
+          if (!this.isDestroyed) {
+            this.set('searchXqlQueryErrorMessage', '');
 
             this.get('block').notifyPropertyChange('data');
           }

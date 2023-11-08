@@ -15,7 +15,7 @@ const getXqlQueryResultsByJobId = async ({ entity, jobId }, options, callback) =
         "Query couldn't run. Try Re-Searching this entity in a few seconds."
       );
     }
-    
+
     const cachedXqlQueryResults = xqlQueryResultsCache.get(
       entity.value + options.xqlQueryString
     );
@@ -52,7 +52,8 @@ const getXqlQueryResultsByJobId = async ({ entity, jobId }, options, callback) =
     Logger.error(
       {
         detail: 'Failed Query Job ID Lookup',
-        options,
+        entity,
+        jobId,
         formattedError: err
       },
       'Query Job ID Lookup Failed'

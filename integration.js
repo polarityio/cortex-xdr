@@ -1,5 +1,5 @@
 'use strict';
-const { get } = require('lodash/fp');
+const { get, getOr } = require('lodash/fp');
 const {
   logging: { setLogger, getLogger },
   errors: { parseErrorToReadableJson }
@@ -66,13 +66,14 @@ const onDetails = async (lookupObject, options, cb) => {
     });
   } catch (error) {
     getLogger().trace({ error }, 'Failed to Get Details');
+
     cb(null, {
       ...lookupObject.data,
       details: {
         ...lookupObject.data.details,
         queryFailed: true,
-        getXqlQueryResultsErrorMessage:
-          "Cortex XDR is running the maximum number of allowed XQL queries.  Please try Re-Searching this entity in a few seconds."
+        searchXqlQueryErrorMessage:
+          'Cortex XDR is running the maximum number of allowed XQL queries.  Please try to Run the XQL Query again in a few seconds.'
       }
     });
   }
