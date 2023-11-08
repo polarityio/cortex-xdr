@@ -9,6 +9,7 @@ const { map, get, getOr, filter, flow, negate, isEmpty } = require('lodash/fp');
 const requestWithDefaults = createRequestWithDefaults({
   config: require('../config/config'),
   roundedSuccessStatusCodes: [200],
+  useLimiter: true,
   requestOptionsToOmitFromLogsKeyPaths: [
     'headers.Authorization',
     'headers.x-xdr-auth-id'
@@ -32,7 +33,7 @@ const requestWithDefaults = createRequestWithDefaults({
         'instance URL, but can be found at Configuration -> API Key -> Copy API URL';
     if (error.status === 401)
       error.message =
-        'Your API Key is not working. Your API Key can be found at Configuration -> API Key';
+        'Your API Key or API Key ID is not working. Your API Key and API Key ID can be found at Configuration -> API Key';
 
     throw error;
   }

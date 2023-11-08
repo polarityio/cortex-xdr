@@ -1,30 +1,15 @@
-const { flow, map, replace, filter, size, isArray, some } = require('lodash/fp');
+const { replace } = require('lodash/fp');
+const { requestWithDefaults } = require('../request');
 const {
-  requestsInParallel,
-  xqlQueryResultsCache,
-} = require('../request');
+  logging: { getLogger }
+} = require('polarity-integration-utils');
 
 const escapeQuotes = replace(/(\r\n|\n|\r)/gm, '');
 
-const searchXqlQuery = async (entities, options) => {
-  const cachedXqlQueryResults = flow(
-    map((entity) => ({
-      entity,
-      result: xqlQueryResultsCache.get(entity.value + options.xqlQueryString)
-    })),
-    filter(({ result }) => isArray(result) && size(result))
-  )(entities);
-
-  const entitiesWithoutCachedResults = filter(
-    (entity) =>
-      !some(
-        (xqlQueryResult) => xqlQueryResult.entity.value === entity.value,
-        cachedXqlQueryResults
-      ),
-    entities
-  );
-  const xqlQueryJobIds = await flow(
-    map((entity) => ({
+const searchXqlQuery = async (entity, options) => {
+  const xqlQueryJobId = get(
+    'body.reply',
+    await requestWithDefaults({
       entity,
       method: 'POST',
       route: 'xql/start_xql_query',
@@ -38,14 +23,11 @@ const searchXqlQuery = async (entities, options) => {
         }
       },
       options
-    })),
-    async (alertSearchRequests) =>
-      await requestsInParallel(alertSearchRequests, 'body.reply')
-  )(entitiesWithoutCachedResults);
+    })
+  );
 
-  return {
-    cachedXqlQueryResults,
-    xqlQueryJobIds
-  };
+  getLogger().trace({ xqlQueryJobId }, 'XQL Query Job Id');
+  return xqlQueryJobId;
 };
+
 module.exports = searchXqlQuery;

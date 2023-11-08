@@ -26,11 +26,10 @@ polarity.export = PolarityComponent.extend({
       this.set('block._state', {});
       this.set('block._state.expandableTitleStates', {});
     }
-    if (this.get('details.incidents').length) {
+    if ((this.get('details.incidents') || []).length) {
       this.set('activeTab', 'incidents');
     } else {
       this.set('activeTab', 'xqlQueryResult');
-      if (!this.get('xqlResultsObtained')) this.getXqlQueryResults();
     }
     this._super(...arguments);
   },
@@ -72,7 +71,7 @@ polarity.export = PolarityComponent.extend({
         this.set(
           'summary',
           this.get('summary')
-            .filter((summaryTag) => summaryTag !== 'XQL Query Ran')
+            .filter((summaryTag) => summaryTag !== 'Open to Run XQL Query')
             .concat(`XQL Results: ${xqlQueryResults.length}`)
         );
         this.set('xqlResultsObtained', true);

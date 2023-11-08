@@ -1,38 +1,42 @@
 'use strict';
-const { validateOptions } = require('./server/userOptions');
-
-const {
-  buildIgnoreResults,
-  organizeEntities,
-} = require('./server/dataTransformations');
-
+const { get } = require('lodash');
 const {
   logging: { setLogger, getLogger },
   errors: { parseErrorToReadableJson }
 } = require('polarity-integration-utils');
 
+const { buildIgnoreResults, organizeEntities } = require('./server/dataTransformations');
+
+const { validateOptions } = require('./server/userOptions');
 const searchEntities = require('./server/searchEntities');
 const assembleLookupResults = require('./server/assembleLookupResults');
+
+const { searchXqlQuery } = require('./server/queries');
 const onMessageFunctions = require('./server/onMessage');
 
-const doLookup = async (entities, options, cb) => {
+const doLookup = async (entities, _options, cb) => {
   const Logger = getLogger();
   try {
     Logger.debug({ entities }, 'Entities');
 
+    const options = {
+      ..._options,
+      maxConcurrent: 1,
+      minimumMillisecondsRequestWillTake: 110
+    };
+
     const { searchableEntities, nonSearchableEntities } = organizeEntities(entities);
 
-    const { incidents, xqlQueryJobIds, cachedXqlQueryResults } = await searchEntities(
+    const { incidents, cachedXqlQueryResults } = await searchEntities(
       searchableEntities,
       options
     );
 
-    Logger.trace({ incidents, xqlQueryJobIds, cachedXqlQueryResults });
+    Logger.trace({ incidents, cachedXqlQueryResults });
 
     const lookupResults = assembleLookupResults(
       entities,
       incidents,
-      xqlQueryJobIds,
       cachedXqlQueryResults,
       options
     );
@@ -40,6 +44,7 @@ const doLookup = async (entities, options, cb) => {
     const ignoreResults = buildIgnoreResults(nonSearchableEntities);
 
     Logger.trace({ lookupResults, ignoreResults }, 'Lookup Results');
+
     cb(null, lookupResults.concat(ignoreResults));
   } catch (error) {
     const err = parseErrorToReadableJson(error);
@@ -49,6 +54,16 @@ const doLookup = async (entities, options, cb) => {
   }
 };
 
+const onDetails = async (lookupObject, options, cb) => {
+  const xqlQueryJobId = get('data.details.doXqlQuery', lookupObject)
+    && await searchXqlQuery(entity, options);
+
+  cb(null, {
+    ...lookupObject.data,
+    details: { ...lookupObject.data.details, xqlQueryJobId }
+  });
+};
+
 const onMessage = ({ action, data: actionParams }, options, callback) =>
   onMessageFunctions[action](actionParams, options, callback);
 
@@ -56,5 +71,6 @@ module.exports = {
   startup: setLogger,
   validateOptions,
   doLookup,
+  onDetails,
   onMessage
 };

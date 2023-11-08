@@ -1,14 +1,10 @@
-const { searchIncidents, searchXqlQuery } = require('./queries');
+const { searchIncidents, getCachedEntityResults } = require('./queries');
 
 const searchEntities = async (entities, options) => {
-  const [incidents, { cachedXqlQueryResults, xqlQueryJobIds }] = await Promise.all([
-    searchIncidents(entities, options),
-    options.doXqlQueries
-      ? searchXqlQuery(entities, options)
-      : { cachedXqlQueryResults: [], xqlQueryJobIds: [] }
-  ]);
+  const cachedXqlQueryResults = getCachedEntityResults(entities, options);
+  const incidents = await searchIncidents(entities, options);
 
-  return { incidents, xqlQueryJobIds, cachedXqlQueryResults };
+  return { incidents, cachedXqlQueryResults };
 };
 
 module.exports = searchEntities;

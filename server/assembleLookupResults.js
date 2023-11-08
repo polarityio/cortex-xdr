@@ -1,22 +1,18 @@
-const { flow, get, size, find, eq, map, some, first } = require('lodash/fp');
+const { flow, get, size, find, eq, map, some } = require('lodash/fp');
 
-const assembleLookupResults = (
-  entities,
-  incidents,
-  xqlQueryJobIds,
-  cachedXqlQueryResults,
-  options
-) =>
+const assembleLookupResults = (entities, incidents, cachedXqlQueryResults, options) =>
   map((entity) => {
     const resultsForThisEntity = getResultsForThisEntity(
       entity,
       incidents,
-      xqlQueryJobIds,
       cachedXqlQueryResults,
       options
     );
 
-    const resultsFound = some(size, resultsForThisEntity);
+    const resultsFound = some(
+      (resultField) => size(resultField) || resultField === true,
+      resultsForThisEntity
+    );
 
     const lookupResult = {
       entity,
@@ -34,22 +30,20 @@ const assembleLookupResults = (
 const getResultForThisEntity = (entity, results) =>
   flow(find(flow(get('entity.value'), eq(entity.value))), get('result'))(results);
 
-const getResultsForThisEntity = (
-  entity,
-  incidents,
-  xqlQueryJobIds,
-  cachedXqlQueryResults
-) => ({
-  incidents: getResultForThisEntity(entity, incidents),
-  xqlQueryJobId: getResultForThisEntity(entity, xqlQueryJobIds),
-  xqlQueryResults: getResultForThisEntity(entity, cachedXqlQueryResults)
-});
+const getResultsForThisEntity = (entity, incidents, cachedXqlQueryResults, options) => {
+  const xqlQueryResults = getResultForThisEntity(entity, cachedXqlQueryResults);
 
-const createSummaryTags = ({ incidents, xqlQueryResults, xqlQueryJobId }, options) => {
-  return []
+  return {
+    doXqlQuery: options.doXqlQueries && !xqlQueryResults,
+    incidents: getResultForThisEntity(entity, incidents),
+    xqlQueryResults
+  };
+};
+
+const createSummaryTags = ({ incidents, xqlQueryResults, doXqlQuery }, options) =>
+  []
     .concat(size(incidents) ? `Incidents Found: ${size(incidents)}` : [])
     .concat(size(xqlQueryResults) ? `XQL Results: ${size(xqlQueryResults)}` : [])
-    .concat(xqlQueryJobId ? `XQL Query Ran` : []);
-};
+    .concat(doXqlQuery ? 'Open to Run XQL Query' : []);
 
 module.exports = assembleLookupResults;
