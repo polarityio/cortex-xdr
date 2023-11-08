@@ -12,13 +12,17 @@ polarity.export = PolarityComponent.extend({
   getXqlQueryResultsErrorMessage: '',
   xqlQueryDisplayString: '',
   init: function () {
-    this.set(
-      'xqlQueryDisplayString',
-      this.get('block.userOptions.xqlQueryString').replace(
-        /{{ENTITY}}/gi,
-        this.get('block.entity.value')
-      )
-    );
+    // Admin might have locked this setting in which case non-admin users
+    // won't have it set
+    if (this.get('block.userOptions.xqlQueryString')) {
+      this.set(
+        'xqlQueryDisplayString',
+        this.get('block.userOptions.xqlQueryString').replace(
+          /{{ENTITY}}/gi,
+          this.get('block.entity.value')
+        )
+      );
+    }
 
     if (this.get('details.xqlQueryResults')) this.set('xqlResultsObtained', true);
 
