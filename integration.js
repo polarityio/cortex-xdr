@@ -64,7 +64,7 @@ const onDetails = async (lookupObject, options, cb) => {
       details: { ...lookupObject.data.details, xqlQueryJobId }
     });
   } catch (error) {
-    getLogger().error({ error }, 'Failed to Get Details');
+    getLogger().trace({ error }, 'Failed to Get Details');
     cb(null, lookupObject.data);
   }
 };
