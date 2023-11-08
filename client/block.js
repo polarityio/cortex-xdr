@@ -91,10 +91,12 @@ polarity.export = PolarityComponent.extend({
         this.get('block').notifyPropertyChange('data');
 
         setTimeout(() => {
-          this.set('getXqlQueryResultsSuccessMessage', '');
-          this.set(`getXqlQueryResultsErrorMessage`, '');
+          if (!this.isDestroyed) {
+            this.set('getXqlQueryResultsSuccessMessage', '');
+            this.set(`getXqlQueryResultsErrorMessage`, '');
 
-          this.get('block').notifyPropertyChange('data');
+            this.get('block').notifyPropertyChange('data');
+          }
         }, 5000);
       });
   }
