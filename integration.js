@@ -55,8 +55,8 @@ const doLookup = async (entities, _options, cb) => {
 };
 
 const onDetails = async (lookupObject, options, cb) => {
-  const xqlQueryJobId = get('data.details.doXqlQuery', lookupObject)
-    && await searchXqlQuery(entity, options);
+  const xqlQueryJobId = get(lookupObject, 'data.details.doXqlQuery', false)
+    && await searchXqlQuery(lookupObject.entity, options);
 
   cb(null, {
     ...lookupObject.data,
