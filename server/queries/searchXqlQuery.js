@@ -1,4 +1,4 @@
-const { replace } = require('lodash/fp');
+const { replace, get } = require('lodash/fp');
 const { requestWithDefaults } = require('../request');
 const {
   logging: { getLogger }
