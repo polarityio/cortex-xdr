@@ -17,6 +17,7 @@ const requestWithDefaults = createRequestWithDefaults({
   preprocessRequestOptions: ({ options, route, ...requestOptions }) => {
     return {
       ...requestOptions,
+      options,
       url: `${options.url}/public_api/v1/${route}`,
       headers: {
         Authorization: options.apiKey,
