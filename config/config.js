@@ -2,7 +2,7 @@ module.exports = {
   name: 'Cortex XDR',
   acronym: 'CXDR',
   description: 'Search for Incidents and run XQL Queries',
-  entityTypes: ['domain', 'IPv4', 'IPv6', 'hash', 'email', 'cve'],
+  entityTypes: ["domain", "IPv4", "IPv6", "MD5", "SHA1", "SHA256", "email", "cve"],
   onDemandOnly: true,
   defaultColor: 'light-blue',
   styles: ['./client/styles.less'],
